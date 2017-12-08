@@ -8,6 +8,8 @@ import pytz
 # TODO make good readme
 # TODO user agent fix
 # TODO fix bug where there is one subreddit
+# TODO display links as notifications
+# TODO run in background
 
 url_template = 'https://www.reddit.com/r/{}/search?q={}&restrict_sr=on&include_over_18=on&sort=new&t=all'
 
