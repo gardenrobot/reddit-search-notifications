@@ -7,8 +7,6 @@ import pytz
 import os
 import time
 
-# TODO fix bug where there is one subreddit
-# TODO make good readme
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
