@@ -55,7 +55,7 @@ def get_link(post_tree):
 
 # linux specific
 def notify(link):
-    os.system('notify-send -t 10000 {}'.format(link))
+    os.system('notify-send -u critical {}'.format(link))
 
 # Return html from given url
 def make_request(url):
