@@ -5,11 +5,13 @@ from lxml import etree
 import datetime
 from dateutil import parser
 import pytz
-# TODO make good readme
-# TODO user agent fix
 # TODO fix bug where there is one subreddit
 # TODO display links as notifications
 # TODO run in background
+
+# TODO use base dir
+# TODO user agent fix
+# TODO make good readme
 
 url_template = 'https://www.reddit.com/r/{}/search?q={}&restrict_sr=on&include_over_18=on&sort=new&t=all'
 
@@ -17,11 +19,7 @@ user_agent = 'Mozilla/5.0 (X11; Linux i586; rv:31.0) Gecko/20100101 Firefox/31.0
 
 meta_xpath = '//div[@class="search-result-meta"]'
 
-# TODO read from somewhere
-with open('most_recent') as f:
-    most_recent = parser.parse(f.read())
-
-def main(subs, search):
+def main(subs, search, most_recent):
     subs_encode = '+'.join(subs.split(','))
     search_encode = urllib.quote_plus(search)
     url = url_template.format(subs_encode, search_encode)
@@ -65,8 +63,22 @@ def make_request_fake(url):
     with open('test.html') as f:
         return f.read()
 
-if len(sys.argv) != 3:
-    print 'Usage: python reddit-search.py [subreddits] [search string]'
+def mark_read(subs, search, most_recent):
+    with open('data', 'w') as f:
+        f.write(subs)
+        f.write(search)
+        f.write(str(pytz.utc.localize(datetime.datetime.utcnow())))
+
+with open('data') as f:
+    subs = f.readline()
+    search = f.readline()
+    most_recent = parser.parse(f.readline())
+
+if len(sys.argv) == 2 and sys.argv[1] == '-r':
+    mark_read(subs, search, most_recent)
+elif len(sys.argv) == 1:
+    main(subs, search, most_recent)
+else:
+    print 'Usage: python reddit-search.py [-r]'
     sys.exit
-main(sys.argv[1], sys.argv[2])
 
