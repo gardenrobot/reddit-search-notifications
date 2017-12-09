@@ -1,5 +1,6 @@
 import sys
 import urllib
+import urllib2
 from lxml import etree
 from dateutil import parser
 import pytz
@@ -7,14 +8,13 @@ import os
 import time
 
 # TODO fix bug where there is one subreddit
-# TODO user agent fix
 # TODO make good readme
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 URL_TEMPLATE = 'https://www.reddit.com/r/{}/search?q={}&restrict_sr=on&include_over_18=on&sort=new&t=all'
 
-USER_AGENT = 'Mozilla/5.0 (X11; Linux i586; rv:31.0) Gecko/20100101 Firefox/31.0'
+USER_AGENT = 'Mozilla/5.0'
 
 META_XPATH = '//div[@class="search-result-meta"]'
 
@@ -31,7 +31,7 @@ def main(subs, search, most_recent):
     search_encode = urllib.quote_plus(search)
     url = URL_TEMPLATE.format(subs_encode, search_encode)
 
-    res = make_request_fake(url)
+    res = make_request(url)
 
     res_tree = etree.HTML(res)
     posts = res_tree.xpath(META_XPATH)
@@ -64,8 +64,9 @@ def notify(link):
 
 # Return html from given url
 def make_request(url):
-    req = urllib.urlopen(url)
-    res = req.read()
+    opener = urllib2.build_opener()
+    opener.addheaders = [('User-Agent', USER_AGENT)]
+    res = opener.open(url).read()
     return res
 
 # For testing
@@ -81,8 +82,8 @@ def mark_read(subs, search, most_recent):
 
 def read_config():
     with open(os.path.join(BASE_DIR, CONFIG_FILE)) as f:
-        subs = f.readline()
-        search = f.readline()
+        subs = f.readline().strip()
+        search = f.readline().strip()
         most_recent = parser.parse(f.readline())
     return (subs, search, most_recent)
 
@@ -96,5 +97,5 @@ elif len(sys.argv) == 1:
         time.sleep(INTERVAL)
 else:
     print 'Usage: python reddit-search.py [-r]'
-    sys.exit
+    sys.exit()
 
