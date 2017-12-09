@@ -6,6 +6,7 @@ from dateutil import parser
 import pytz
 import os
 import time
+import datetime
 
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -77,8 +78,8 @@ def make_request(url):
 # Rewrite config but with most_recent set to now.
 def mark_read(subs, search, most_recent):
     with open(os.path.join(BASE_DIR, CONFIG_FILE), 'w') as f:
-        f.write(subs)
-        f.write(search)
+        f.write(subs + os.linesep)
+        f.write(search + os.linesep)
         f.write(str(pytz.utc.localize(datetime.datetime.utcnow())))
 
 # Return values from config
