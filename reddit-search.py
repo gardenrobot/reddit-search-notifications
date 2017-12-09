@@ -1,8 +1,6 @@
 import sys
 import urllib
-import lxml
 from lxml import etree
-import datetime
 from dateutil import parser
 import pytz
 import os
@@ -11,7 +9,6 @@ import time
 # TODO fix bug where there is one subreddit
 # TODO use base dir
 # TODO user agent fix
-# TODO clean up imports
 # TODO make good readme
 
 URL_TEMPLATE = 'https://www.reddit.com/r/{}/search?q={}&restrict_sr=on&include_over_18=on&sort=new&t=all'
