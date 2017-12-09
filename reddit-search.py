@@ -7,9 +7,10 @@ import os
 import time
 
 # TODO fix bug where there is one subreddit
-# TODO use base dir
 # TODO user agent fix
 # TODO make good readme
+
+BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 URL_TEMPLATE = 'https://www.reddit.com/r/{}/search?q={}&restrict_sr=on&include_over_18=on&sort=new&t=all'
 
@@ -69,17 +70,17 @@ def make_request(url):
 
 # For testing
 def make_request_fake(url):
-    with open('test.html') as f:
+    with open(os.path.join(BASE_DIR, 'test.html')) as f:
         return f.read()
 
 def mark_read(subs, search, most_recent):
-    with open(CONFIG_FILE, 'w') as f:
+    with open(os.path.join(BASE_DIR, CONFIG_FILE), 'w') as f:
         f.write(subs)
         f.write(search)
         f.write(str(pytz.utc.localize(datetime.datetime.utcnow())))
 
 def read_config():
-    with open(CONFIG_FILE) as f:
+    with open(os.path.join(BASE_DIR, CONFIG_FILE)) as f:
         subs = f.readline()
         search = f.readline()
         most_recent = parser.parse(f.readline())
