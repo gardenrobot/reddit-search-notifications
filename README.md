@@ -1,4 +1,5 @@
 Reddit Search Notifications
+
 Author: Sam Clotfelter
 
 This script uses reddits search feature to notify when there are new posts containing the given string in the given subreddit(s).
@@ -7,6 +8,11 @@ Runs in linux only.
 
 # Usage
 
+## Requirements
+
+Run 
+`pip install -r requirements.txt`
+
 ## Create the config file
 
 1. Make a file called `config` in the same directory.
@@ -14,10 +20,12 @@ Runs in linux only.
 2. The file should be 3 lines long with the following content.
 
 	\[subreddits separated by commas\]
+
 	\[search term\]
+
 	\[most\_recent\]
 
-	See `config.example`
+See `config.example`
 
 ## Run
 
