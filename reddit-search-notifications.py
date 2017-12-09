@@ -12,30 +12,37 @@ BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 URL_TEMPLATE = 'https://www.reddit.com/r/{}/search?q={}&restrict_sr=on&include_over_18=on&sort=new&t=all'
 
+# User Agent for http calls
 USER_AGENT = 'Mozilla/5.0'
 
+# 1 hour, sleep timer
+INTERVAL = 3600
+
+# extract all search results
 META_XPATH = '//div[@class="search-result-meta"]'
 
-INTERVAL = 3600 # 1 hour
-
+# extract data from single search result
 POST_DATE_XPATH = './/span[@class="search-time"]/time/@datetime'
-
 POST_LINK_XPATH = './/a/@data-href-url'
 
+# name of config file
 CONFIG_FILE = 'config'
 
 def main(subs, search, most_recent):
+    # Create url
     subs_encode = '+'.join(subs.split(','))
     search_encode = urllib.quote_plus(search)
     url = URL_TEMPLATE.format(subs_encode, search_encode)
 
+    # Get html
     res = make_request(url)
-
     res_tree = etree.HTML(res)
     posts = res_tree.xpath(META_XPATH)
+
     if len(posts) == 0:
         print 'No posts found'
 
+    # Posts made after most_recent
     new_posts = [post for post in posts if get_date(post) > most_recent]
 
     if len(new_posts) == 0:
@@ -56,7 +63,7 @@ def get_link(post_tree):
     link = post_tree.xpath(POST_LINK_XPATH)[0]
     return link
 
-# linux specific
+# Display notification. Linux specific.
 def notify(link):
     os.system('notify-send -u critical {}'.format(link))
 
@@ -67,17 +74,14 @@ def make_request(url):
     res = opener.open(url).read()
     return res
 
-# For testing
-def make_request_fake(url):
-    with open(os.path.join(BASE_DIR, 'test.html')) as f:
-        return f.read()
-
+# Rewrite config but with most_recent set to now.
 def mark_read(subs, search, most_recent):
     with open(os.path.join(BASE_DIR, CONFIG_FILE), 'w') as f:
         f.write(subs)
         f.write(search)
         f.write(str(pytz.utc.localize(datetime.datetime.utcnow())))
 
+# Return values from config
 def read_config():
     with open(os.path.join(BASE_DIR, CONFIG_FILE)) as f:
         subs = f.readline().strip()
