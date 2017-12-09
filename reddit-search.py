@@ -5,12 +5,14 @@ from lxml import etree
 import datetime
 from dateutil import parser
 import pytz
-# TODO fix bug where there is one subreddit
-# TODO display links as notifications
+import os
 # TODO run in background
 
+# TODO fix bug where there is one subreddit
 # TODO use base dir
 # TODO user agent fix
+# TODO clean up imports
+# TODO organize constants
 # TODO make good readme
 
 url_template = 'https://www.reddit.com/r/{}/search?q={}&restrict_sr=on&include_over_18=on&sort=new&t=all'
@@ -31,15 +33,14 @@ def main(subs, search, most_recent):
     if len(posts) == 0:
         print 'No posts found'
 
-    new_posts = []
-    for post in posts:
-        if get_date(post) > most_recent:
-            link = get_link(post)
-            new_posts.append(link)
-    if len(new_posts) > 0:
+    new_posts = [post for post in posts if get_date(post) > most_recent]
+
+    if len(new_posts) == 0:
+        print 'New new posts found'
+    else:
         print 'New posts'
         for post in new_posts:
-            print post
+            notify(get_link(post))
 
 
 # Return post date
@@ -51,6 +52,10 @@ def get_date(post_tree):
 def get_link(post_tree):
     link = post_tree.xpath('.//a/@data-href-url')[0]
     return link
+
+# linux specific
+def notify(link):
+    os.system('notify-send -t 10000 {}'.format(link))
 
 # Return html from given url
 def make_request(url):
