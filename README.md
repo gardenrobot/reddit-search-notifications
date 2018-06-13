@@ -2,6 +2,9 @@ Reddit Search Notifications
 
 Author: Sam Clotfelter
 
+UPDATE: Discontinued due to reddit supporting rss feeds for searches.
+<https://www.reddit.com/wiki/search#wiki_staying_up_to_date_.28rss.29>
+
 This script uses reddits search feature to notify when there are new posts containing the given string in the given subreddit(s).
 
 Runs in linux only.
